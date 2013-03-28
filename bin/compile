@@ -19,8 +19,8 @@ tarball=${ver}.tgz
 OTP_TARBALL_URL="https://s3.amazonaws.com/heroku-buildpack-erlang/${tarball}"
 ERLROOT=${build}/otp
 CB_ROOT=${build}/ChicagoBoss
-#CB_CACHE_DIR=${cache}/ChicagoBoss
-CB_CACHE_DIR=${build}/ChicagoBossCache
+CB_CACHE_DIR=${cache}/ChicagoBoss
+#CB_CACHE_DIR=${build}/ChicagoBossCache
 PROFILE=${HOME}/.profile.d
 cb_ver="v0.8.1"
 
@@ -62,6 +62,8 @@ export PATH
     echo "-------> Unpacking ChicagoBoss ${cb_ver}"
     tar zxf ${cache}/${cb_tarball} -C ${CB_CACHE_DIR} --strip-components=1
     cd ${CB_CACHE_DIR}
+    ls
+    cat rebar.config
     echo "-------> Compiling ChicagoBoss ${cb_ver}"
     ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
 )
