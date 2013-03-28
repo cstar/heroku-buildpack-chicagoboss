@@ -69,7 +69,7 @@ unset GIT_DIR
 
 cd ${build}
 mkdir -p app
-find . -maxdepth 1 | grep -v app | xargs -i mv {} app/
+find . -maxdepth 1 | grep -v ./app | grep './' | xargs -i mv {} app/
 
 echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
 cp -R ${CB_CACHE_DIR} ${CB_ROOT}
