@@ -88,7 +88,11 @@ cp ${CB_ROOT}/rebar .
 
 PATH=/app/otp/bin:$PATH
 export PATH
+
+which erl
+/app/otp/bin/erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().'  -noshell
 erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().'  -noshell
+
 ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
   echo "-----> Build failed"
