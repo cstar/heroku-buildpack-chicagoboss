@@ -95,7 +95,8 @@ if [ -f ${bpdir}/opt/otp.sh ]; then
   cp ${bpdir}/opt/otp.sh ${PROFILE}
 fi
 
-echo "-----> Installing configurator for hostname, database credentials and admin_password"
+echo "-----> Installing start script and configurator"
+cp ${bpdir}/opt/start ./
 cp ${bpdir}/opt/zotonic_config ./
 
 echo "-----> Build succeeded"
