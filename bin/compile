@@ -77,27 +77,13 @@ cp -R ${CB_CACHE_DIR} ${CB_ROOT}
 
 echo "-------> Compiling App"
 cd ${build}/app
-
+cp ${CB_ROOT}/rebar .
 ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
   echo "-----> Build failed"
   exit 1
 fi
 
-
-cd $build
-
-if [ ! -e "rebar" ]; then
-  echo "-----> Installing Rebar from buildpack"
-  cp ${bpdir}/opt/rebar ./
-fi
-
-echo "-----> Building with Rebar"
-./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
-  echo "-----> Build failed"
-  exit 1
-fi
 
 if [ -f ${bpdir}/opt/otp.sh ]; then
   mkdir -p ${PROFILE}
