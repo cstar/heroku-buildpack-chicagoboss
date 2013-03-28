@@ -31,7 +31,6 @@ echo "-----> Using ChicagoBoss ${cb_ver}"
 (
     set -e
     mkdir -p ${cache}/otp
-    ls -l ${cache}/otp
     # Already cached?
     test -f ${cache}/otp/${tarball} && exit
 
