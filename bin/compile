@@ -22,8 +22,6 @@ Z_ROOT=${build}/zotonic
 PROFILE=${HOME}/.profile.d
 z_ver="master"
 
-echo "-----> Build is ${build}, cache is ${cache}"
-
 ZOTONIC_TARBALL_URL="https://nodeload.github.com/zotonic/zotonic/tar.gz/${z_ver}"
 z_tarball="zotonic-${z_ver}.tar.gz"
 echo "-----> Using Erlang/OTP $ver"
@@ -98,7 +96,6 @@ if [ -f ${bpdir}/opt/otp.sh ]; then
 fi
 
 echo "-----> Updating hostname, database credentials and admin_password"
-cp ${bpdir}/opt/rebar ./
-./zotonic_config ${build}/priv/sites/site/config ${build}/priv/sites/site/config 
+${bpdir}/opt/zotonic_config ${build}/priv/sites/site/config ${build}/priv/sites/site/config 
 
 echo "-----> Build succeeded"
