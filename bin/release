@@ -8,5 +8,5 @@ config_vars:
 addons:
   - heroku-postgresql:dev
 default_process_types:
-  web:  ./zotonic_config priv/sites/site/config priv/sites/site/config ; erl -env ERL_MAX_PORTS 256 -env ZOTONIC_PORT $PORT +P 10000000 +K true -pa ebin -pa  deps/*/ebin -boot start_sasl -config priv/erlang.config -noshell -s zotonic
+  web: ./start
 EOF
