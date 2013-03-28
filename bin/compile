@@ -68,7 +68,7 @@ unset GIT_DIR
 )
 
 mkdir -p ${build}/app
-mv ${build}/* ${build}/app/ #2>&1 > /dev/null
+find ${build} -maxdepth 1 | grep -v ${build}/app/ | xargs -i mv {} .${build}/app/
 
 echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
 cp -R ${CB_CACHE_DIR} ${CB_ROOT}
