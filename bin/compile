@@ -46,7 +46,7 @@ tar zxf ${cache}/otp/${tarball} -C ${ERLROOT} --strip-components=2
 echo "-------> Installing Erlang/OTP $ver"
 ln -s ${ERLROOT} /app/otp
 ${ERLROOT}/Install -minimal /app/otp
-
+erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().'  -noshell
 PATH=/app/otp/bin:$PATH
 export PATH
 unset GIT_DIR
