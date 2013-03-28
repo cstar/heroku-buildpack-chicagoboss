@@ -29,18 +29,18 @@ echo "-----> Using Erlang/OTP $ver"
 echo "-----> Using ChicagoBoss ${cb_ver}"
 (
     set -e
-
+    mkdir -p #{cache}/otp
     # Already cached?
-    test -f ${cache}/${tarball} && exit
+    test -f ${cache}/otp/${tarball} && exit
 
-    #rm -rf ${cache}/* # be sure not to build up cruft
-    cd ${cache}
+    rm -rf ${cache}/otp/* # be sure not to build up cruft
+    cd ${cache}/otp
     echo "-------> Fetching Erlang/OTP $ver"
     curl -sO ${OTP_TARBALL_URL} || exit 1
 )
 echo "-------> Unpacking Erlang/OTP $ver"
 mkdir -p ${ERLROOT}
-tar zxf ${cache}/${tarball} -C ${ERLROOT} --strip-components=2
+tar zxf ${cache}/otp/${tarball} -C ${ERLROOT} --strip-components=2
 echo "-------> Installing Erlang/OTP $ver"
 ln -s ${ERLROOT} /app/otp
 ${ERLROOT}/Install -minimal /app/otp
@@ -50,11 +50,10 @@ export PATH
 
 (
     set -e
-
     # Already cached?
-    test -f ${cache}/${z_tarball} && exit
+    test -f ${CB_CACHE_DIR}/ebin/boss.beam && exit
 
-    #rm -rf ${cache}/* # be sure not to build up cruft
+    rm -rf ${CB_CACHE_DIR}/* # be sure not to build up cruft
     cd ${cache}
     echo "-------> Fetching ChicagoBoss ${cb_ver}"
     curl -s ${CB_TARBALL_URL} > ${cb_tarball} || exit 1
@@ -67,7 +66,7 @@ export PATH
 )
 
 mkdir -p ${build}/app
-mv ${build}/* ${build}/app #2>&1 > /dev/null
+mv ${build}/* ${build}/app/ #2>&1 > /dev/null
 
 echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
 cp -R ${CB_CACHE_DIR} ${CB_ROOT}
