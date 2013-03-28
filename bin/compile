@@ -82,6 +82,9 @@ cp -R ${CB_CACHE_DIR} ${CB_ROOT}
 echo "-------> Compiling App"
 cd ${build}/app
 cp ${CB_ROOT}/rebar .
+
+PATH=/app/otp/bin:$PATH
+export PATH
 erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().'  -noshell
 ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
