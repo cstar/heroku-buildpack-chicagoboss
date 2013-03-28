@@ -75,15 +75,15 @@ unset GIT_DIR
 )
 
 cd ${build}
-mkdir -p app
-find . -maxdepth 1 | grep -v ./app | grep './' | xargs -i mv {} app/
+mkdir -p lieutenant
+find . -maxdepth 1 | grep -v ./lieutenant | grep './' | xargs -i mv {} lieutenant/
 
 echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
 cp -R ${CB_CACHE_DIR} ${CB_ROOT}
 
 
 echo "-------> Compiling App"
-cd ${build}/app
+cd ${build}/lieutenant
 cp ${CB_ROOT}/rebar .
 
 PATH=/app/otp/bin:$PATH
