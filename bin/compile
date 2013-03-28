@@ -68,7 +68,7 @@ unset GIT_DIR
 )
 
 mkdir -p ${build}/app
-find ${build} -maxdepth 1 | grep -v ${build}/app | grep -v ${build} | xargs -i mv {} .${build}/app/
+find ${build} -maxdepth 1 | grep -v ${build}/app | grep -v ${build} | xargs -i mv {} ${build}/app/
 
 echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
 cp -R ${CB_CACHE_DIR} ${CB_ROOT}
@@ -76,7 +76,7 @@ cp -R ${CB_CACHE_DIR} ${CB_ROOT}
 
 echo "-------> Compiling App"
 cd ${build}/app
-ls -l
+
 ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
   echo "-----> Build failed"
