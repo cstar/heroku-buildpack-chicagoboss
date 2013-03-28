@@ -29,7 +29,7 @@ echo "-----> Using Erlang/OTP $ver"
 echo "-----> Using ChicagoBoss ${cb_ver}"
 (
     set -e
-    mkdir -p #{cache}/otp
+    mkdir -p ${cache}/otp
     # Already cached?
     test -f ${cache}/otp/${tarball} && exit
 
