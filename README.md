@@ -4,6 +4,7 @@ This is a Heroku buildpack for Zotonic sites.
 Use it for easy and free deployments of Zotonic sites.
 The buildpack will automatically provision a dev database and configure your Zotonic site to use it.
 
+NOTICE: The git repo to push should only contain a Zotonic site, not the whole Zotonic source.
 
 ### Configure your site
 
