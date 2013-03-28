@@ -5,11 +5,12 @@ Use it for easy and free deployments of Zotonic sites.
 The buildpack will automatically provision a dev database and configure your Zotonic site to use it.
 
 
-### Configure your Heroku App
+### Configure your site
 
     $ heroku config:add BUILDPACK_URL="https://github.com/cstar/heroku-buildpack-zotonic.git" -a YOUR_APP
 
 or
+    
     $ heroku create --buildpack "https://github.com/cstar/heroku-buildpack-zotonic.git"
 
 ### Configure your Zotonic site
@@ -35,7 +36,7 @@ To select the version for your app:
     $ echo OTP_R15B01 > .preferred_otp_version
     $ git commit "Select R15B01 as preferred OTP version" .preferred_otp_version
 
-### Build your Heroku App
+### Deploy your site
 
     $ git push heroku master
 
@@ -58,5 +59,7 @@ Geoff Cant for writing the base heroku-buildpack-erlang, the starting point of t
 ### AUTHOR
 
 Eric Cestari
+
 http://twitter.com/cstar
+
 http://eric.cestari.info/
