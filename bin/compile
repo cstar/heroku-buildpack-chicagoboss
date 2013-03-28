@@ -31,6 +31,7 @@ echo "-----> Using ChicagoBoss ${cb_ver}"
 (
     set -e
     mkdir -p ${cache}/otp
+    ls -l ${cache}/otp
     # Already cached?
     test -f ${cache}/otp/${tarball} && exit
 
@@ -53,6 +54,7 @@ unset GIT_DIR
 (
     set -e
     # Already cached?
+    ls -l ${CB_CACHE_DIR}/ebin/boss.beam
     test -f ${CB_CACHE_DIR}/ebin/boss.beam && exit
 
     rm -rf ${CB_CACHE_DIR}/* # be sure not to build up cruft
@@ -68,7 +70,8 @@ unset GIT_DIR
 )
 
 mkdir -p ${build}/app
-find ${build} -maxdepth 1 | grep -v ${build}/app/ | xargs -i mv {} .${build}/app/
+ls ${build}
+find ${build} -maxdepth 1 | grep -v ${build}/app/ | grep -v ${build} | xargs -i mv {} .${build}/app/
 
 echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
 cp -R ${CB_CACHE_DIR} ${CB_ROOT}
