@@ -57,11 +57,10 @@ export PATH
     #rm -rf ${cache}/* # be sure not to build up cruft
     cd ${cache}
     echo "-------> Fetching ChicagoBoss ${cb_ver}"
-    curl -s ${CB_TARBALL_URL} > $cb_tarball || exit 1
-    echo "-------> Unpacking ChicagoBoss ${cb_ver}"
+    curl -s ${CB_TARBALL_URL} > ${cb_tarball} || exit 1
     mkdir -p ${CB_CACHE_DIR}
     echo "-------> Unpacking ChicagoBoss ${cb_ver}"
-    tar zxf ${cache}/${z_tarball} -C ${CB_CACHE_DIR} --strip-components=1
+    tar zxf ${cache}/${cb_tarball} -C ${CB_CACHE_DIR} --strip-components=1
     cd ${CB_CACHE_DIR}
     echo "-------> Compiling ChicagoBoss ${cb_ver}"
     ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
