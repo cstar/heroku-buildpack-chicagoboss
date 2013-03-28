@@ -1,0 +1,100 @@
+#!/bin/bash
+
+##
+# usage: bin/compile <build-dir> <cache-dir>
+
+set -e
+bpdir=$(cd $(dirname $(dirname $0)); pwd)
+mkdir -p "$1" "$2"
+build=$(cd "$1/" && pwd)
+test -z ${build} && exit
+cache=$(cd "$2/" && pwd)
+test -z ${cache} && exit
+DEFAULT_OTP_VERSION="master"
+if [ -f ${build}/.preferred_otp_version ]; then
+    OTP_VERSION=$(cat ${build}/.preferred_otp_version)
+fi
+ver=${OTP_VERSION:=${DEFAULT_OTP_VERSION}}
+tarball=${ver}.tgz
+OTP_TARBALL_URL="https://s3.amazonaws.com/heroku-buildpack-erlang/${tarball}"
+ERLROOT=${build}/otp
+Z_ROOT=${build}/zotonic
+PROFILE=${HOME}/.profile.d
+z_ver="master"
+
+echo "-----> Build is ${build}, cache is ${cache}"
+
+ZOTONIC_TARBALL_URL="https://nodeload.github.com/cstar/zotonic/tar.gz/${z_ver}"
+z_tarball="zotonic-${z_ver}.tar.gz"
+echo "-----> Using Erlang/OTP $ver"
+echo "-----> Using Zotonic ${z_ver}"
+(
+    set -e
+
+    # Already cached?
+    test -f ${cache}/${tarball} && exit
+
+    #rm -rf ${cache}/* # be sure not to build up cruft
+    cd ${cache}
+    echo "-------> Fetching Erlang/OTP $ver"
+    curl -sO ${OTP_TARBALL_URL} || exit 1
+)
+(
+    set -e
+
+    # Already cached?
+    #test -f ${cache}/${z_tarball} && exit
+
+    #rm -rf ${cache}/* # be sure not to build up cruft
+    cd ${cache}
+    echo "-------> Fetching Zotonic ${z_ver}"
+    curl -s ${ZOTONIC_TARBALL_URL} > $z_tarball || exit 1
+)
+
+# Moving file around
+mkdir -p /tmp/site
+mv ${build}/* /tmp/site
+
+
+echo "-------> Unpacking Erlang/OTP $ver"
+mkdir -p ${ERLROOT}
+tar zxf ${cache}/${tarball} -C ${ERLROOT} --strip-components=2
+echo "-------> Installing Erlang/OTP $ver"
+ln -s ${ERLROOT} /app/otp
+${ERLROOT}/Install -minimal /app/otp
+
+echo "-------> Unpacking Zotonic ${z_ver}"
+mkdir -p ${Z_ROOT}
+tar zxf ${cache}/${z_tarball} -C ${build} --strip-components=1
+
+rm -Rf ${build}/priv/sites/*
+
+echo "-------> Installing site"
+mv /tmp/site ${build}/priv/sites
+
+cp ${bpdir}/opt/erlang.config ${build}/priv
+
+PATH=/app/otp/bin:$PATH
+export PATH
+
+cd $build
+
+if [ ! -e "rebar" ]; then
+  echo "-----> Installing Rebar from buildpack"
+  cp ${bpdir}/opt/rebar ./
+fi
+
+echo "-----> Building with Rebar"
+unset GIT_DIR
+./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "-----> Build failed"
+  exit 1
+fi
+
+if [ -f ${bpdir}/opt/otp.sh ]; then
+  mkdir -p ${PROFILE}
+  cp ${bpdir}/opt/otp.sh ${PROFILE}
+fi
+
+echo "-----> Build succeeded"

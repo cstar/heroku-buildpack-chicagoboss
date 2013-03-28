@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# this pack is valid for apps with a rebar.config or ebin dir in the root
+if [ -f $1/config ]; then
+  echo "Zotonic"
+  exit 0
+elif [ -d $1/dispatch ]; then
+  echo "Zotonic"
+  exit 0
+else
+  exit 1
+fi
