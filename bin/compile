@@ -53,7 +53,6 @@ unset GIT_DIR
 (
     set -e
     # Already cached?
-    ls -l ${CB_CACHE_DIR}/ebin/boss.beam
     test -f ${CB_CACHE_DIR}/ebin/boss.beam && exit
 
     rm -rf ${CB_CACHE_DIR}/* # be sure not to build up cruft
