@@ -1,14 +1,22 @@
-## Heroku buildpack: Erlang
+## Heroku buildpack: Zotonic
 
-This is a Heroku buildpack for Erlang apps. It uses [Rebar](https://github.com/basho/rebar).
+This is a Heroku buildpack for Zotonic sites.
+Use it for easy and free deployments of Zotonic sites.
+The buildpack will automatically provision a dev database and configure your Zotonic site to use it.
 
 
 ### Configure your Heroku App
 
-    $ heroku config:add BUILDPACK_URL="https://github.com/archaelus/heroku-buildpack-erlang.git" -a YOUR_APP
+    $ heroku config:add BUILDPACK_URL="https://github.com/cstar/heroku-buildpack-zotonic.git" -a YOUR_APP
 
 or
-    $ heroku create --buildpack "https://github.com/archaelus/heroku-buildpack-erlang.git"
+    $ heroku create --buildpack "https://github.com/cstar/heroku-buildpack-zotonic.git"
+
+### Configure your Zotonic site
+
+Set the following environment variables :
+
+  ADMIN_PASSWORD (That's the admin password, obviously)
 
 ### Select an Erlang version
 
@@ -32,3 +40,23 @@ To select the version for your app:
     $ git push heroku master
 
 You may need to write a new commit and push if your code was already up to date.
+
+### TODO
+
+Select the Zotonic version to deploy. Currently fetches master.
+
+Fetches deps and rebuilds all Zotonic on each deploys, should use the build cache to only recompile the necessary bits.
+
+IMPORTANT: All file uploads go to the transient file system, meaning that everything is destroyed on each deploys. These assets should go to S3 or similar.
+
+Pull requests are very welcome.
+
+### THANKS
+
+Geoff Cant for writing the base heroku-buildpack-erlang, the starting point of this buildpack. And the Zotonic and Heroky guys.
+
+### AUTHOR
+
+Eric Cestari
+http://twitter.com/cstar
+http://eric.cestari.info/
