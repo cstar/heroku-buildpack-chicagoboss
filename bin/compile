@@ -67,8 +67,9 @@ unset GIT_DIR
     ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
 )
 
-mkdir -p ${build}/app
-find ${build} -maxdepth 1 | grep -v ${build}/app | xargs -i mv {} ${build}/app/
+cd ${build}
+mkdir -p app
+find . -maxdepth 1 | grep -v app | xargs -i mv {} app/
 
 echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
 cp -R ${CB_CACHE_DIR} ${CB_ROOT}
