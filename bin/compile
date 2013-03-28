@@ -18,14 +18,15 @@ ver=${OTP_VERSION:=${DEFAULT_OTP_VERSION}}
 tarball=${ver}.tgz
 OTP_TARBALL_URL="https://s3.amazonaws.com/heroku-buildpack-erlang/${tarball}"
 ERLROOT=${build}/otp
-Z_ROOT=${build}/zotonic
+CB_ROOT=${build}/ChicagoBoss
+CB_CACHE_DIR=${cache}/ChicagoBoss
 PROFILE=${HOME}/.profile.d
-z_ver="master"
+cb_ver="v0.8.1"
 
-ZOTONIC_TARBALL_URL="https://nodeload.github.com/zotonic/zotonic/tar.gz/${z_ver}"
-z_tarball="zotonic-${z_ver}.tar.gz"
+CB_TARBALL_URL="https://nodeload.github.com/evanmiller/ChicagoBoss/tar.gz/${cb_ver}"
+cb_tarball="cb-${cb_ver}.tar.gz"
 echo "-----> Using Erlang/OTP $ver"
-echo "-----> Using Zotonic ${z_ver}"
+echo "-----> Using ChicagoBoss ${cb_ver}"
 (
     set -e
 
@@ -37,23 +38,6 @@ echo "-----> Using Zotonic ${z_ver}"
     echo "-------> Fetching Erlang/OTP $ver"
     curl -sO ${OTP_TARBALL_URL} || exit 1
 )
-(
-    set -e
-
-    # Already cached?
-    #test -f ${cache}/${z_tarball} && exit
-
-    #rm -rf ${cache}/* # be sure not to build up cruft
-    cd ${cache}
-    echo "-------> Fetching Zotonic ${z_ver}"
-    curl -s ${ZOTONIC_TARBALL_URL} > $z_tarball || exit 1
-)
-
-# Moving file around
-mkdir -p /tmp/site
-mv ${build}/* /tmp/site
-
-
 echo "-------> Unpacking Erlang/OTP $ver"
 mkdir -p ${ERLROOT}
 tar zxf ${cache}/${tarball} -C ${ERLROOT} --strip-components=2
@@ -61,26 +45,51 @@ echo "-------> Installing Erlang/OTP $ver"
 ln -s ${ERLROOT} /app/otp
 ${ERLROOT}/Install -minimal /app/otp
 
-echo "-------> Unpacking Zotonic ${z_ver}"
-mkdir -p ${Z_ROOT}
-tar zxf ${cache}/${z_tarball} -C ${build} --strip-components=1
-
-rm -Rf ${build}/priv/sites/*
-
-echo "-------> Installing site"
-mv /tmp/site ${build}/priv/sites
-
-cp ${bpdir}/opt/erlang.config ${build}/priv
-
 PATH=/app/otp/bin:$PATH
 export PATH
 
+(
+    set -e
+
+    # Already cached?
+    test -f ${cache}/${z_tarball} && exit
+
+    #rm -rf ${cache}/* # be sure not to build up cruft
+    cd ${cache}
+    echo "-------> Fetching ChicagoBoss ${cb_ver}"
+    curl -s ${CB_TARBALL_URL} > $cb_tarball || exit 1
+    echo "-------> Unpacking ChicagoBoss ${cb_ver}"
+    mkdir -p ${CB_CACHE_DIR}
+    echo "-------> Unpacking ChicagoBoss ${cb_ver}"
+    tar zxf ${cache}/${z_tarball} -C ${CB_CACHE_DIR} --strip-components=1
+    cd ${CB_CACHE_DIR}
+    echo "-------> Compiling ChicagoBoss ${cb_ver}"
+    ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
+)
+
+mkdir -p ${build}/app
+mv ${build}/* ${build}/app #2>&1 > /dev/null
+
+echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
+cp -R ${CB_CACHE_DIR} ${CB_ROOT}
+
+
+echo "-------> Compiling App ${cb_ver}"
+cd ${build}/app
+unset GIT_DIR
+./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "-----> Build failed"
+  exit 1
+fi
+
+
 cd $build
 
-if [ ! -e "rebar" ]; then
-  echo "-----> Installing Rebar from buildpack"
-  cp ${bpdir}/opt/rebar ./
-fi
+# if [ ! -e "rebar" ]; then
+#   echo "-----> Installing Rebar from buildpack"
+#   cp ${bpdir}/opt/rebar ./
+# fi
 
 echo "-----> Building with Rebar"
 unset GIT_DIR
@@ -97,6 +106,6 @@ fi
 
 echo "-----> Installing start script and configurator"
 cp ${bpdir}/opt/start ./
-cp ${bpdir}/opt/zotonic_config ./
+cp ${bpdir}/opt/cb_config ./
 
 echo "-----> Build succeeded"

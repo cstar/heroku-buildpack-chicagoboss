@@ -1,0 +1,32 @@
+#!/usr/bin/env escript
+%% -*- erlang -*-
+
+main([Src, Dest])->
+  {ok, [Terms]} = file:consult(Src),
+
+  Params = dict:from_list(Terms),
+  % boss params
+  {ok, BossTerms} = dict:find(boss, Params),
+
+  Url = os:getenv("DATABASE_URL"),
+  {HttpPort, _} = string:to_integer(os:getenv("PORT")),
+  BossParams = dict:from_list(BossTerms),
+  {ok, {postgres, UserPass, Host, DbPort, [$/ | DbName], _}} = http_uri:parse(Url),
+  [User, Pass] = string:tokens(UserPass, ":"),
+  HerokuSettings = [{port, HttpPort},{db_host, Host}, 
+                    {db_port, DbPort}, {db_username, User},
+                    {db_password, Pass}, {db_database, DbName},
+                    {db_adapter, pgsql}],
+  BossConfigured = lists:foldl(fun({K, V}, Acc)->
+    dict:store(K, V, Acc)
+  end, BossParams, HerokuSettings),
+  Params2 = dict:store(boss, dict:to_list(BossConfigured), Params),
+  %lager params
+  Params3 = dict:store(lager, [{handlers,
+    [{lager_console_backend, info}]},
+    {crash_log, "priv/sasl/crash.log"}], Params2),
+  {ok, S} = file:open(Dest, write),
+  io:format(S, "~p.", [dict:to_list(Params3)]);
+
+main(_)->
+  io:format("usage: cb_config <src_config_file> <destination_config_file>~n").
