@@ -49,7 +49,9 @@ ${ERLROOT}/Install -minimal /app/otp
 
 PATH=/app/otp/bin:$PATH
 export PATH
+which erl
 /app/otp/bin/erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().'  -noshell
+erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().'  -noshell
 unset GIT_DIR
 (
     set -e
