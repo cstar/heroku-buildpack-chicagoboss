@@ -1,7 +1,7 @@
 #!/usr/bin/env escript
 %% -*- erlang -*-
 
-main([Src, Dest])->
+main(["runtime", Src, Dest])->
   {ok, [Terms]} = file:consult(Src),
 
   Params = dict:from_list(Terms),
@@ -27,6 +27,16 @@ main([Src, Dest])->
     {crash_log, "priv/sasl/crash.log"}], Params2),
   {ok, S} = file:open(Dest, write),
   io:format(S, "~p.", [dict:to_list(Params3)]);
+
+main(["compile", BossConfig])->
+  {ok, [Terms]} = file:consult(BossConfig),
+
+  Params = dict:from_list(Terms),
+  % boss params
+  {ok, BossTerms} = dict:find(boss, Params),
+  {applications, [AppName]} = lists:keyfind(applications, 1, BossTerms),
+  io:format("~s", [AppName]);
+
 
 main(_)->
   io:format("usage: cb_config <src_config_file> <destination_config_file>~n").
