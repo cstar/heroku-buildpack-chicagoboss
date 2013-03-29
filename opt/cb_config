@@ -7,10 +7,11 @@ main(["runtime", Src, Dest])->
   Params = dict:from_list(Terms),
   % boss params
   {ok, BossTerms} = dict:find(boss, Params),
-  {ok, [AppName]} = dict:find(applications, BossParams),
   Url = os:getenv("DATABASE_URL"),
   {HttpPort, _} = string:to_integer(os:getenv("PORT")),
   BossParams = dict:from_list(BossTerms),
+  {ok, [AppName]} = dict:find(applications, BossParams),
+
   {ok, {postgres, UserPass, Host, DbPort, [$/ | DbName], _}} = http_uri:parse(Url),
   [User, Pass] = string:tokens(UserPass, ":"),
   HerokuSettings = [{port, HttpPort},{db_host, Host}, 
