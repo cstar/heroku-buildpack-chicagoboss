@@ -27,7 +27,7 @@ cb_ver="v0.8.1"
 CB_TARBALL_URL="https://nodeload.github.com/evanmiller/ChicagoBoss/tar.gz/${cb_ver}"
 cb_tarball="cb-${cb_ver}.tar.gz"
 echo "-----> Using Erlang/OTP $ver"
-echo "-----> Using ChicagoBoss ${cb_ver}"
+
 (
     set -e
     mkdir -p ${cache}/otp
@@ -49,7 +49,7 @@ ${ERLROOT}/Install -minimal /app/otp
 
 PATH=/app/otp/bin:$PATH
 export PATH
-
+echo "-----> Using ChicagoBoss ${cb_ver}"
 unset GIT_DIR
 (
     set -e
