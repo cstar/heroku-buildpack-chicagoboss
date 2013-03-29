@@ -7,7 +7,7 @@ main(["runtime", Src, Dest])->
   Params = dict:from_list(Terms),
   % boss params
   {ok, BossTerms} = dict:find(boss, Params),
-
+  {ok, [AppName]} = dict:find(applications, BossParams),
   Url = os:getenv("DATABASE_URL"),
   {HttpPort, _} = string:to_integer(os:getenv("PORT")),
   BossParams = dict:from_list(BossTerms),
@@ -26,7 +26,8 @@ main(["runtime", Src, Dest])->
     [{lager_console_backend, info}]},
     {crash_log, "priv/sasl/crash.log"}], Params2),
   {ok, S} = file:open(Dest, write),
-  io:format(S, "~p.", [dict:to_list(Params3)]);
+  io:format(S, "~p.", [dict:to_list(Params3)]),
+  io:format("~s", [AppName]);
 
 main(["compile", Src, Dest])->
   {ok, [Terms]} = file:consult(Src),
