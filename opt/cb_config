@@ -28,15 +28,19 @@ main(["runtime", Src, Dest])->
   {ok, S} = file:open(Dest, write),
   io:format(S, "~p.", [dict:to_list(Params3)]);
 
-main(["compile", BossConfig])->
-  {ok, [Terms]} = file:consult(BossConfig),
+main(["compile", Src, Dest])->
+  {ok, [Terms]} = file:consult(Src),
 
   Params = dict:from_list(Terms),
   % boss params
   {ok, BossTerms} = dict:find(boss, Params),
-  {applications, [AppName]} = lists:keyfind(applications, 1, BossTerms),
-  io:format("~s", [AppName]);
-
+  BossParams = dict:from_list(BossTerms),
+  {ok, [AppName]} = dict:find(applications, BossParams),
+  BossParams2 =  dict:store(path,  "../ChicagoBoss", BossParams),
+  Params2 = dict:store(boss, dict:to_list(BossParams2), Params),
+  io:format("~s", [AppName]),
+  {ok, S} = file:open(Dest, write),
+  io:format(S, "~p.", [dict:to_list(Params2)]);
 
 main(_)->
-  io:format("usage: cb_config <src_config_file> <destination_config_file>~n").
+  io:format("usage: cb_config [runtime|compile] <src_config_file> <destination_config_file>~n").

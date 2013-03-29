@@ -73,7 +73,7 @@ unset GIT_DIR
 )
 
 cd ${build}
-appname=`${bpdir}/opt/cb_config compile boss.config`
+appname=`${bpdir}/opt/cb_config compile boss.config boss.config`
 mkdir -p ${appname}
 find . -maxdepth 1 | grep -v ./${appname} | grep -v ./otp | grep './' | xargs -i mv {} ${appname}
 
