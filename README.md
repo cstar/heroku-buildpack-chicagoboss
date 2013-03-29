@@ -59,6 +59,8 @@ For some reason, the routes extracted from the controller naming scheme are not 
 Add the following line to your routes :
 
     {"/(.*?)/(.*?)/(.*?)", [{controller, '$1'}, {action, '$2'}, {id, '$3'}]}.
+    
+Which is not always working. Will fix that in an ulterior release. In any case, you have to be explicit for the moment.
 
 ### THANKS
 
