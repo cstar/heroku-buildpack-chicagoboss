@@ -16,7 +16,7 @@ main(["runtime", Src, Dest])->
   HerokuSettings = [{port, HttpPort},{db_host, Host}, 
                     {db_port, DbPort}, {db_username, User},
                     {db_password, Pass}, {db_database, DbName},
-                    {db_adapter, pgsql}],
+                    {db_adapter, pgsql}, {path, "../ChicagoBoss"}],
   BossConfigured = lists:foldl(fun({K, V}, Acc)->
     dict:store(K, V, Acc)
   end, BossParams, HerokuSettings),
