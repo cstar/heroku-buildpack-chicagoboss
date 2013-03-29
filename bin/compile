@@ -55,7 +55,7 @@ unset GIT_DIR
     set -e
     # Already cached?
     test -f ${CB_CACHE_DIR}/ebin/boss.beam && exit
-    
+    echo "-----> Not in cache, fetching from ${CB_TARBALL_URL}"
     mkdir -p ${CB_CACHE_DIR}
     rm -rf ${CB_CACHE_DIR}/* # be sure not to build up cruft
     cd ${cache}
@@ -71,7 +71,7 @@ unset GIT_DIR
       exit 1
     fi
 )
-
+echo "-----> Rewriting boss.config"
 cd ${build}
 appname=`${bpdir}/opt/cb_config compile boss.config boss.config`
 mkdir -p ${appname}
