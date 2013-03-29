@@ -53,15 +53,6 @@ Pull requests are very welcome.
 
 Given the architecture of Heroku, it is not advisable to use the MQ with one or more dynos. They are isolated and each would have their own queue.
 
-### BUG
-
-For some reason, the routes extracted from the controller naming scheme are not used.
-Add the following line to your routes :
-
-    {"/(.*?)/(.*?)/(.*?)", [{controller, '$1'}, {action, '$2'}, {id, '$3'}]}.
-    
-Which is not always working. Will fix that in an ulterior release. In any case, you have to be explicit for the moment.
-
 ### THANKS
 
 Geoff Cant for writing the base heroku-buildpack-erlang, the starting point of this buildpack. And the Chicago Boss and Heroku guys.
