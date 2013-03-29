@@ -52,42 +52,40 @@ export PATH
 which erl
 /app/otp/bin/erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().'  -noshell
 erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().'  -noshell
-unset GIT_DIR
-(
-    set -e
-    # Already cached?
-    test -f ${CB_CACHE_DIR}/ebin/boss.beam && exit
-
-    rm -rf ${CB_CACHE_DIR}/* # be sure not to build up cruft
-    cd ${cache}
-    echo "-------> Fetching ChicagoBoss ${cb_ver}"
-    curl -s ${CB_TARBALL_URL} > ${cb_tarball} || exit 1
-    mkdir -p ${CB_CACHE_DIR}
-    echo "-------> Unpacking ChicagoBoss ${cb_ver}"
-    tar zxf ${cache}/${cb_tarball} -C ${CB_CACHE_DIR} --strip-components=1
-    cd ${CB_CACHE_DIR}
-    echo "-------> Compiling ChicagoBoss ${cb_ver}"
-    ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
-    if [ ${PIPESTATUS[0]} -ne 0 ]; then
-      echo "-----> ChicagoBoss Build failed"
-      exit 1
-    fi
-)
+#unset GIT_DIR
+#(
+#    set -e
+#    # Already cached?
+#    test -f ${CB_CACHE_DIR}/ebin/boss.beam && exit
+#    
+#    mkdir -p ${CB_CACHE_DIR}
+#    rm -rf ${CB_CACHE_DIR}/* # be sure not to build up cruft
+#    cd ${cache}
+#    echo "-------> Fetching ChicagoBoss ${cb_ver}"
+#    curl -s ${CB_TARBALL_URL} > ${cb_tarball} || exit 1
+#    echo "-------> Unpacking ChicagoBoss ${cb_ver}"
+#    tar zxf ${cache}/${cb_tarball} -C ${CB_CACHE_DIR} --strip-components=1
+#    cd ${CB_CACHE_DIR}
+#    echo "-------> Compiling ChicagoBoss ${cb_ver}"
+#    ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
+#    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+#      echo "-----> ChicagoBoss Build failed"
+#      exit 1
+#    fi
+#)
 
 cd ${build}
-mkdir -p lieutenant
-find . -maxdepth 1 | grep -v ./lieutenant | grep './' | xargs -i mv {} lieutenant/
+#mkdir -p lieutenant
+#find . -maxdepth 1 | grep -v ./lieutenant | grep './' | xargs -i mv {} lieutenant/
 
-echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
-cp -R ${CB_CACHE_DIR} ${CB_ROOT}
+#echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
+#cp -R ${CB_CACHE_DIR} ${CB_ROOT}
 
 
 echo "-------> Compiling App"
-cd ${build}/lieutenant
-cp ${CB_ROOT}/rebar .
+#cd ${build}/lieutenant
+#cp ${CB_ROOT}/rebar .
 
-PATH=/app/otp/bin:$PATH
-export PATH
 
 which erl
 /app/otp/bin/erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().'  -noshell
