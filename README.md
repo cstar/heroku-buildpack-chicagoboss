@@ -1,6 +1,6 @@
 ## Heroku buildpack: ChicagoBoss
 
-This is a Heroku buildpack for applications written with the ChicagoBoss web framework (version 0.8.5).
+This is a Heroku buildpack for applications written with the ChicagoBoss web framework (version 0.8.7).
 
 The buildpack will automatically provision a dev database and configure your application to use it.
 
@@ -41,7 +41,7 @@ You may need to write a new commit and push if your code was already up to date.
 
 ### TODO
 
-Select the Chicago version to deploy. Currently fetches 0.8.5.
+Select the Chicago version to deploy. Currently fetches 0.8.7.
 
 Forces use of heroku postgresql database.
 
