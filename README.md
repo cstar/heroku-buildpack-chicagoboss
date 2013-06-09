@@ -23,7 +23,8 @@ The Erlang/OTP release version that will be used to build and run your applicati
 
 Currently supported OTP versions:
 
-* OTP_R15B03-1 (the default)
+* OTP_R16B (the default)
+* OTP_R15B03-1
 * OTP_R15B
 * OTP_R15B01
 * OTP_R15B02
