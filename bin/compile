@@ -22,7 +22,7 @@ CB_ROOT=${build}/ChicagoBoss
 CB_CACHE_DIR=${cache}/ChicagoBoss
 #CB_CACHE_DIR=${build}/ChicagoBossCache
 PROFILE=${HOME}/.profile.d
-cb_ver="v0.8.3"
+cb_ver="v0.8.7"
 
 CB_TARBALL_URL="https://nodeload.github.com/evanmiller/ChicagoBoss/tar.gz/${cb_ver}"
 cb_tarball="cb-${cb_ver}.tar.gz"
