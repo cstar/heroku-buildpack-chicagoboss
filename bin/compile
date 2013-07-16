@@ -55,7 +55,7 @@ if [ ! -e "rebar" ]; then
   echo "-----> Installing Rebar from buildpack"
   cp ${bpdir}/opt/rebar ./
 fi
-if [ -e ".clean" ]
+if [ -e ".clean" ]; then
     echo "-----> Cleaning depencies (remove .clean) to cache them"
     rm -Rf deps/*
 fi
