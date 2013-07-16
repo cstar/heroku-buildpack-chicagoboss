@@ -1,5 +1,5 @@
 #!/bin/bash
-cd application
+
 echo "Configuring database connection and admin password from enviromnent"
 appname=`./cb_config boss.config boss.config`
 

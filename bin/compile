@@ -49,10 +49,15 @@ mkdir -p ${cache}/deps
 ln -sf ${cache}/deps ${build}/deps
 
 cd ${build}
+
 mkdir -p ${build}/ebin
 if [ ! -e "rebar" ]; then
   echo "-----> Installing Rebar from buildpack"
   cp ${bpdir}/opt/rebar ./
+fi
+if [ -e ".clean" ]
+    echo "-----> Cleaning depencies (remove .clean) to cache them"
+    rm -Rf deps/*
 fi
 
 echo "-----> Building with Rebar"
