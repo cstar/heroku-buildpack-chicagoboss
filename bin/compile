@@ -51,7 +51,7 @@ if [ -f ${build}/.clean ]; then
     rm -Rf ${cache}/deps/*
 fi
 
-rsync -ahSD --ignore-errors --force --delete --stats ${cache}/deps/ ${build}/deps/
+rsync -ahSD --ignore-errors --force --delete ${cache}/deps/ ${build}/deps/
 
 cd ${build}
 
@@ -79,5 +79,5 @@ cp ${bpdir}/opt/cb_config ./
 cp ${bpdir}/opt/start ./
 
 echo "-----> Caching dep builds"
-rsync -ahSD --ignore-errors --force --delete --stats ${build}/deps/ ${cache}/deps/
+rsync -ahSD --ignore-errors --force --delete ${build}/deps/ ${cache}/deps/
 echo "-----> Build succeeded"
