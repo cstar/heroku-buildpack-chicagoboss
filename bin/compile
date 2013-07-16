@@ -46,7 +46,12 @@ export PATH
 
 mkdir -p ${cache}/deps
 
-ln -sf ${cache}/deps ${build}/deps
+if [ -e ".clean" ]; then
+    echo "-----> Cleaning depencies (remove .clean) to cache them"
+    rm -Rf ${cache}/deps/*
+fi
+
+rsync -a ${cache}/deps ${build}/deps
 
 cd ${build}
 
@@ -55,10 +60,7 @@ if [ ! -e "rebar" ]; then
   echo "-----> Installing Rebar from buildpack"
   cp ${bpdir}/opt/rebar ./
 fi
-if [ -e ".clean" ]; then
-    echo "-----> Cleaning depencies (remove .clean) to cache them"
-    rm -Rf deps/*
-fi
+
 
 echo "-----> Building with Rebar"
 unset GIT_DIR
@@ -76,4 +78,6 @@ fi
 cp ${bpdir}/opt/cb_config ./
 cp ${bpdir}/opt/start ./
 
+echo "-----> Caching dep builds"
+rsync -a ${build}/deps ${cache}/deps
 echo "-----> Build succeeded"
