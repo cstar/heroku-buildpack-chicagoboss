@@ -10,7 +10,7 @@ build=$(cd "$1/" && pwd)
 test -z ${build} && exit
 cache=$(cd "$2/" && pwd)
 test -z ${cache} && exit
-DEFAULT_OTP_VERSION="OTP_R16B"
+DEFAULT_OTP_VERSION="master"
 if [ -f ${build}/.preferred_otp_version ]; then
     OTP_VERSION=$(cat ${build}/.preferred_otp_version)
 fi
@@ -18,88 +18,56 @@ ver=${OTP_VERSION:=${DEFAULT_OTP_VERSION}}
 tarball=${ver}.tgz
 OTP_TARBALL_URL="https://s3.amazonaws.com/heroku-buildpack-erlang/${tarball}"
 ERLROOT=${build}/otp
-CB_ROOT=${build}/ChicagoBoss
-CB_CACHE_DIR=${cache}/ChicagoBoss
-#CB_CACHE_DIR=${build}/ChicagoBossCache
 PROFILE=${HOME}/.profile.d
-cb_ver="v0.8.7"
 
-CB_TARBALL_URL="https://nodeload.github.com/evanmiller/ChicagoBoss/tar.gz/${cb_ver}"
-cb_tarball="cb-${cb_ver}.tar.gz"
 echo "-----> Using Erlang/OTP $ver"
 
 (
     set -e
-    mkdir -p ${cache}/otp
-    # Already cached?
-    test -f ${cache}/otp/${tarball} && exit
 
-    rm -rf ${cache}/otp/* # be sure not to build up cruft
-    cd ${cache}/otp
+    # Already cached?
+    test -f ${cache}/${tarball} && exit
+
+    rm -rf ${cache}/* # be sure not to build up cruft
+    cd ${cache}
     echo "-------> Fetching Erlang/OTP $ver"
     curl -sO ${OTP_TARBALL_URL} || exit 1
 )
 
 echo "-------> Unpacking Erlang/OTP $ver"
 mkdir -p ${ERLROOT}
-tar zxf ${cache}/otp/${tarball} -C ${ERLROOT} --strip-components=2
+tar zxf ${cache}/${tarball} -C ${ERLROOT} --strip-components=2
 echo "-------> Installing Erlang/OTP $ver"
 ln -s ${ERLROOT} /app/otp
 ${ERLROOT}/Install -minimal /app/otp
 
 PATH=/app/otp/bin:$PATH
 export PATH
-echo "-----> Using ChicagoBoss ${cb_ver}"
+
+mkdir -p ${cache}/deps
+
+ln -sf ${cache}/deps $build/deps
+
+cd $build
+
+if [ ! -e "rebar" ]; then
+  echo "-----> Installing Rebar from buildpack"
+  cp ${bpdir}/opt/rebar ./
+fi
+
+echo "-----> Building with Rebar"
 unset GIT_DIR
-(
-    set -e
-    # Already cached?
-    test -f ${CB_CACHE_DIR}/ebin/boss.beam && exit
-    echo "-----> Not in cache, fetching from ${CB_TARBALL_URL}"
-    mkdir -p ${CB_CACHE_DIR}
-    rm -rf ${CB_CACHE_DIR}/* # be sure not to build up cruft
-    cd ${cache}
-    echo "-------> Fetching ChicagoBoss ${cb_ver}"
-    curl -s ${CB_TARBALL_URL} > ${cb_tarball} || exit 1
-    echo "-------> Unpacking ChicagoBoss ${cb_ver}"
-    tar zxf ${cache}/${cb_tarball} -C ${CB_CACHE_DIR} --strip-components=1
-    cd ${CB_CACHE_DIR}
-    echo "-------> Compiling ChicagoBoss ${cb_ver}"
-    ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
-    if [ ${PIPESTATUS[0]} -ne 0 ]; then
-      echo "-----> ChicagoBoss Build failed"
-      exit 1
-    fi
-)
-echo "-----> Rewriting boss.config"
-cd ${build}
-appname=`${bpdir}/opt/cb_config compile boss.config boss.config`
-mkdir -p ${appname}
-echo "-------> Copying files to ${appname} subdirectory"
-find . -maxdepth 1 | grep -v ./${appname} | grep -v ./otp | grep './' | xargs -i mv {} ${appname}
-echo "-------> linking ${appname} as application"
-ln -s ${appname} application
-echo "-------> Deploying ChicagoBoss ${cb_ver} to build dir"
-cp -R ${CB_CACHE_DIR} ${CB_ROOT}
-
-echo "-------> Compiling App"
-cd ${build}/${appname}
-
 ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
   echo "-----> Build failed"
   exit 1
 fi
 
-
 if [ -f ${bpdir}/opt/otp.sh ]; then
   mkdir -p ${PROFILE}
   cp ${bpdir}/opt/otp.sh ${PROFILE}
 fi
 
-echo "-----> Installing start script and configurator"
-cd ${build}
-cp ${bpdir}/opt/start ./
 cp ${bpdir}/opt/cb_config ./
 
 echo "-----> Build succeeded"
