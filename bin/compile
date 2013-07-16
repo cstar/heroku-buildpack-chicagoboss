@@ -51,7 +51,7 @@ if [ -e ".clean" ]; then
     rm -Rf ${cache}/deps/*
 fi
 
-rsync -a ${cache}/deps ${build}/deps
+rsync -av ${cache}/deps ${build}/deps
 
 cd ${build}
 
@@ -79,5 +79,5 @@ cp ${bpdir}/opt/cb_config ./
 cp ${bpdir}/opt/start ./
 
 echo "-----> Caching dep builds"
-rsync -a ${build}/deps ${cache}/deps
+rsync -av ${build}/deps ${cache}/deps
 echo "-----> Build succeeded"
