@@ -69,5 +69,6 @@ if [ -f ${bpdir}/opt/otp.sh ]; then
 fi
 
 cp ${bpdir}/opt/cb_config ./
+cp ${bpdir}/opt/start ./
 
 echo "-----> Build succeeded"
