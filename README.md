@@ -1,6 +1,16 @@
 ## Heroku buildpack: ChicagoBoss
 
-This is a Heroku buildpack for applications written with the ChicagoBoss web framework (version 0.8.7).
+This is a Heroku buildpack for applications written with the ChicagoBoss web framework (master branch or 0.9 when release).
+
+To select the Chicago Boss version you want to deploy, select the correct revision in your rebar.config :
+
+```erlang
+
+{deps, [
+  {boss, ".*", {git, "git://github.com/cstar/ChicagoBoss.git", "master"}}
+]}.
+
+```
 
 The buildpack will automatically provision a dev database and configure your application to use it.
 
@@ -23,7 +33,7 @@ The Erlang/OTP release version that will be used to build and run your applicati
 
 Currently supported OTP versions:
 
-* OTP_R16B (the default)
+* OTP_R16B01 (the default)
 * OTP_R15B03-1
 * OTP_R15B
 * OTP_R15B01
@@ -40,9 +50,7 @@ To select the version for your app:
 
 You may need to write a new commit and push if your code was already up to date.
 
-### TODO
-
-Select the Chicago version to deploy. Currently fetches 0.8.7.
+### 
 
 Forces use of heroku postgresql database.
 
