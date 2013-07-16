@@ -46,10 +46,10 @@ export PATH
 
 mkdir -p ${cache}/deps
 
-ln -sf ${cache}/deps $build/deps
+ln -sf ${cache}/deps ${build}/deps
 
-cd $build
-
+cd ${build}
+mkdir -p ${build}/ebin
 if [ ! -e "rebar" ]; then
   echo "-----> Installing Rebar from buildpack"
   cp ${bpdir}/opt/rebar ./
