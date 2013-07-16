@@ -4,5 +4,5 @@ echo "Configuring database connection and admin password from enviromnent"
 ./cb_config boss.config boss.config
 
 echo "Starting Chicago Boss application on port $PORT"
-exec erl +K true +P 32768 -pa `pwd`/deps/*/ebin -pa `pwd`/deps/elixir/lib/*/ebin -pa `pwd`/ebin -noshell -boot start_sasl -config boss -s boss
+exec erl +K true +P 32768 -pa /app/deps/*/ebin -pa /app/deps/elixir/lib/*/ebin -pa /app/ebin -noshell -boot start_sasl -config boss -s boss
 
